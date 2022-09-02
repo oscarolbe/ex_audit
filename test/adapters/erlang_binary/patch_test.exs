@@ -1,7 +1,7 @@
-defmodule PatchTest do
+defmodule Adapters.ErlangBinary.PatchTest do
   use ExUnit.Case
 
-  alias ExAudit.{Diff, Patch}
+  alias ExAudit.Adapters.ErlangBinary.{Diff, Patch}
   doctest Patch
 
   test "should apply primitive changes" do

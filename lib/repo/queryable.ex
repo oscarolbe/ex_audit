@@ -158,11 +158,15 @@ defmodule ExAudit.Queryable do
   end
 
   defp _revert(version, struct) do
-    apply_change(reverse_action(version.action), ExAudit.Diff.reverse(version.patch), struct)
+    apply_change(
+      reverse_action(version.action),
+      ExAudit.Tracking.adapter(:diff).reverse(version.patch),
+      struct
+    )
   end
 
   defp apply_change(:updated, patch, to) do
-    ExAudit.Patch.patch(to, patch)
+    ExAudit.Tracking.adapter(:patch).patch(to, patch)
   end
 
   defp apply_change(:deleted, _patch, _to) do
@@ -170,7 +174,7 @@ defmodule ExAudit.Queryable do
   end
 
   defp apply_change(:created, patch, _to) do
-    ExAudit.Patch.patch(%{}, patch)
+    ExAudit.Tracking.adapter(:patch).patch(%{}, patch)
   end
 
   defp reverse_action(:updated), do: :updated

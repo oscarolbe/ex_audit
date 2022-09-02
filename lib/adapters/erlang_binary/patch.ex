@@ -1,4 +1,6 @@
-defmodule ExAudit.Patch do
+defmodule ExAudit.Adapters.ErlangBinary.Patch do
+  @behaviour ExAudit.Adapters.PatchAdapter
+
   @doc """
   Applies the patch to the given term
   """

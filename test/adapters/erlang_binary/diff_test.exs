@@ -1,7 +1,7 @@
-defmodule DiffTest do
+defmodule Adapters.ErlangBinary.DiffTest do
   use ExUnit.Case
 
-  alias ExAudit.Diff
+  alias ExAudit.Adapters.ErlangBinary.Diff
   doctest Diff
 
   test "should diff primitives" do

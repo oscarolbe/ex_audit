@@ -1,4 +1,6 @@
-defmodule ExAudit.Diff do
+defmodule ExAudit.Adapters.ErlangBinary.Diff do
+  @behaviour ExAudit.Adapters.DiffAdapter
+
   @type addition :: {:added, term}
   @type removal :: {:removed, term}
   @type change :: {:changed, changes}
