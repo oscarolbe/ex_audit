@@ -1,18 +1,10 @@
 defmodule ExAudit.Tracking do
-  def adapter(module) do
-    adapter =
-      Application.get_env(
-        :ex_audit,
-        :adapter,
-        :erlang_binary
-      )
-      |> Atom.to_string()
-
-    Module.concat([
-      "ExAudit.Adapters",
-      Macro.camelize(adapter),
-      Macro.camelize(Atom.to_string(module))
-    ])
+  def adapter do
+    Application.get_env(
+      :ex_audit,
+      :adapter,
+      ExAudit.Adapters.ErlangBinaryDiff
+    )
   end
 
   def find_changes(action, struct_or_changeset, resulting_struct) do
@@ -43,7 +35,7 @@ defmodule ExAudit.Tracking do
       assocs = schema.__schema__(:associations)
 
       patch =
-        adapter(:diff).diff(
+        adapter().diff(
           ExAudit.Tracker.map_struct(old) |> Map.drop(assocs),
           ExAudit.Tracker.map_struct(new) |> Map.drop(assocs)
         )

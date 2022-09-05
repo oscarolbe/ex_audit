@@ -118,7 +118,7 @@ Optionally, you can store the diff changes as a map instead of binary.
 ```elixir
 config :ex_audit,
   ecto_repos: [MyApp.Repo],
-  adapter: :map
+  adapter: ExAudit.Adapters.MapDiff
   ...
 ```
 

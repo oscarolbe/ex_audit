@@ -12,4 +12,9 @@ defmodule ExAudit.Adapters.DiffAdapter do
   Invert the diff between two terms.
   """
   @callback reverse(term, term) :: :map | ExAudit.Adapters.ErlangBinary.Diff.changes()
+
+  @doc """
+  Applies the patch to the given term
+  """
+  @callback patch(term, term) :: any()
 end
