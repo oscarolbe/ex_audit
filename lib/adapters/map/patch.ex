@@ -4,7 +4,7 @@ defmodule ExAudit.Adapters.Map.Patch do
   @doc """
   Applies the patch to the given term
   """
-  def patch(_, {:primitive_change, _, b}) do
+  def patch(_, %{changed: :primitive_change, added: b, removed: _a}) do
     b
   end
 
@@ -16,13 +16,19 @@ defmodule ExAudit.Adapters.Map.Patch do
     changes
     |> Enum.reverse()
     |> Enum.reduce(list, fn
-      {:added_to_list, i, el}, list ->
+      %{added: el}, map ->
+        List.insert_at(map, -1, el)
+
+      %{removed: el}, map ->
+        List.delete(map, el)
+
+      %{changed: :added_to_list, index: i, added: el}, list ->
         List.insert_at(list, i, el)
 
-      {:removed_from_list, i, _}, list ->
+      %{changed: :removed_from_list, index: i, removed: _}, list ->
         List.delete_at(list, i)
 
-      {:changed_in_list, i, change}, list ->
+      %{changed: :changed_in_list, index: i, changes: change}, list ->
         List.update_at(list, i, &patch(&1, change))
     end)
   end
@@ -30,13 +36,19 @@ defmodule ExAudit.Adapters.Map.Patch do
   def patch(map, changes) when is_map(map) and is_map(changes) do
     changes
     |> Enum.reduce(map, fn
-      {key, {:added, b}}, map ->
+      {key, %{added: b}}, map ->
         Map.put(map, key, b)
 
-      {key, {:removed, _}}, map ->
+      {key, %{changed: :added, added: b}}, map ->
+        Map.put(map, key, b)
+
+      {key, %{removed: _}}, map ->
         Map.delete(map, key)
 
-      {key, {:changed, changes}}, map ->
+      {key, %{changed: :removed, removed: _}}, map ->
+        Map.delete(map, key)
+
+      {key, %{changed: changes}}, map ->
         Map.update!(map, key, &patch(&1, changes))
     end)
   end
