@@ -106,10 +106,6 @@ defmodule ExAudit.Adapters.Map.Diff do
   def reverse(%{changed: :changed, changes: changes}),
     do: %{changed: :changed, changes: reverse(changes)}
 
-  def reverse({:added_to_list, index, value}), do: {:removed_from_list, index, value}
-
-  def reverse({:removed_from_list, index, value}), do: {:added_to_list, index, value}
-
   def reverse(%{changed: :changed_in_list, index: index, changes: changes}),
     do: %{changed: :changed_in_list, index: index, changes: reverse(changes)}
 
